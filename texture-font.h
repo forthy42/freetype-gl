@@ -371,6 +371,11 @@ typedef struct texture_font_t
      * Freetype face pointer
      */
     FT_Face face;
+
+    /**
+     * Whether to scale texture coordinates
+     */
+    int scaletex;
 } texture_font_t;
 
 /**
@@ -522,7 +527,7 @@ void
   size_t
   texture_font_load_glyphs( texture_font_t * self,
                             const char * codepoints );
-  /*
+/**
    *Increases the size of a fonts texture atlas
    *Invalidates all pointers to font->atlas->data
    *Changes the UV Coordinates of existing glyphs in the font
