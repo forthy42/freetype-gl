@@ -815,8 +815,8 @@ cleanup_stroker:
 	glyph->advance_x = slot->advance.x * self->scale;
 	glyph->advance_y = slot->advance.y * self->scale;
     } else {
-	glyph->advance_x = slot->advance.x / HRESf;
-	glyph->advance_y = slot->advance.y / HRESf;
+	glyph->advance_x = slot->advance.x * self->scale / HRESf;
+	glyph->advance_y = slot->advance.y * self->scale / HRESf;
     }
 
     texture_font_index_glyph(self, glyph, ucodepoint);
