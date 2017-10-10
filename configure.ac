@@ -1,7 +1,7 @@
 ## ExampleLib Example: an example of using Automake to link with a library
 
-AC_INIT([freetype-gl], [1.3], [bernd@net2o.de], [freetype-gl for Linux/Android],
-        [http://lonesock.net/soil.html])
+AC_INIT([freetype-gl], [1.4], [bernd@net2o.de], [freetype-gl for Linux/Android],
+        [https://github.com/forthy42/freetype-gl])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([1.10 -Wall no-define])
 AC_CONFIG_MACRO_DIR([m4])
@@ -13,10 +13,6 @@ LT_INIT
 case $CC in
      *android*)
 	LIBADD="-llog"
-	LIBGL=GLESv2
-	;;
-     *)
-	LIBGL=GL
 	;;
 esac
 
@@ -24,11 +20,10 @@ esac
 FTINC=`eval $ac_compiler -E -Wp,-v conftest.$ac_ext 2>&1 | grep '^ ' | while read i; do test -f $i/freetype2/ft2build.h && echo -I$i/freetype2; done`
 rm conftest.$ac_ext
 
-SOURCE_PATH_SIZE=$(echo $PWD | wc -c)
+SOURCE_PATH_SIZE=0 #$(echo $PWD | wc -c)
 
 AC_SUBST(FTINC)
 AC_SUBST(LIBADD)
-AC_SUBST(LIBGL)
 AC_SUBST(SOURCE_PATH_SIZE)
 
 PRECC=${CC%gcc*}
