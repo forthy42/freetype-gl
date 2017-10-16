@@ -213,7 +213,6 @@ typedef enum font_mode_t {
     MODE_MANUAL_CLOSE,
     MODE_ALWAYS_OPEN
 } font_mode_t;
-
 /**
  * default mode for fonts
  */
@@ -231,6 +230,11 @@ texture_font_default_mode(font_mode_t mode);
 #if !defined(FT2BUILD_H_) && !defined(__FT2BUILD_H__) && !defined(FREETYPE_H_)
 typedef struct FT_FaceRec_* FT_Face;
 typedef struct FT_LibraryRec_* FT_Library;
+#endif
+
+/* same for harfbuzz */
+#ifndef HB_BUFFER_H
+typedef struct hb_font_t hb_font_t;
 #endif
 
 /**
@@ -297,11 +301,6 @@ typedef struct texture_font_t
     float size;
 
     /**
-     * Whether to use autohint when rendering font
-     */
-    int hinting;
-
-    /**
      * Mode the font is rendering its next glyph
      */
     rendermode_t rendermode;
@@ -314,18 +313,26 @@ typedef struct texture_font_t
     /**
      * Whether to use our own lcd filter.
      */
-    int filtering;
+    unsigned char filtering;
+    /**
+     * Whether to use kerning if available
+     */
+    unsigned char kerning;
+
+    /**
+     * Whether to use autohint when rendering font
+     */
+    unsigned char hinting;
+
+    /**
+     * Whether to scale texture coordinates
+     */
+    unsigned char scaletex;
 
     /**
      * LCD filter weights
      */
     unsigned char lcd_weights[5];
-
-    /**
-     * Whether to use kerning if available
-     */
-    int kerning;
-
 
     /**
      * This field is simply used to compute a default line spacing (i.e., the
@@ -387,9 +394,9 @@ typedef struct texture_font_t
     FT_Face face;
 
     /**
-     * Whether to scale texture coordinates
+     * Harfbuzz font pointer
      */
-    int scaletex;
+    hb_font_t* hb_font;
 
     /**
      * factor to scale font coordinates
@@ -532,9 +539,50 @@ texture_font_index_glyph( texture_font_t * self,
  *
  * @return One if the glyph could be loaded, zero if not.
  */
-  int
-  texture_font_load_glyph( texture_font_t * self,
-                           const char * codepoint );
+int
+texture_font_load_glyph( texture_font_t * self,
+			 const char * codepoint );
+
+/**
+ * Request a new glyph from the font. If it has not been created yet, it will
+ * be.
+ *
+ * @param self      A valid texture font
+ * @param codepoint Font's character codepoint to be obtained
+ *
+ * @return A pointer on the new glyph or 0 if the texture atlas is not big
+ *         enough
+ *
+ */
+texture_glyph_t *
+texture_font_get_glyph_gi( texture_font_t * self,
+			   uint32_t glyph_index );
+
+/**
+ * Request an already loaded glyph from the font. 
+ *
+ * @param self         A valid texture font
+ * @param glyph_index  Font's character codepoint to be found
+ *
+ * @return A pointer on the glyph or 0 if the glyph is not loaded
+ */
+texture_glyph_t *
+texture_font_find_glyph_gi( texture_font_t * self,
+			    uint32_t glyph_index );
+
+/**
+ * Request the loading of a given glyph.
+ *
+ * @param self         A valid texture font
+ * @param glyph_index  Character codepoint to be loaded in font's codepoint
+ * @param ucodepoint   Character codepoint for inserting into lookup table
+ *
+ * @return One if the glyph could be loaded, zero if not.
+ */
+int
+texture_font_load_glyph_gi( texture_font_t * self,
+			    uint32_t glyph_index,
+			    uint32_t ucodepoint);
 
 /**
  * Request the loading of several glyphs at once.

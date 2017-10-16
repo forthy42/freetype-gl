@@ -496,17 +496,25 @@ texture_font_delete( texture_font_t *self )
     free( self );
 }
 
+// ------------------------------------------------ texture_font_find_glyph ---
 texture_glyph_t *
 texture_font_find_glyph( texture_font_t * self,
                          const char * codepoint )
 {
-    uint32_t ucodepoint = utf8_to_utf32( codepoint );
-    uint32_t i = ucodepoint >> 8;
-    uint32_t j = ucodepoint & 0xFF;
-    texture_glyph_t **glyph_index1, *glyph;
-
-    if(ucodepoint == -1)
+    if(!codepoint)
 	return (texture_glyph_t *)self->atlas->special;
+    
+    return texture_font_find_glyph_gi(self, utf8_to_utf32( codepoint ));
+}
+
+// ---------------------------------------------- texture_font_find_glyph_gi ---
+texture_glyph_t *
+texture_font_find_glyph_gi( texture_font_t * self,
+			    uint32_t codepoint )
+{
+    uint32_t i = codepoint >> 8;
+    uint32_t j = codepoint & 0xFF;
+    texture_glyph_t **glyph_index1, *glyph;
 
     if(self->glyphs->size <= i)
 	return NULL;
@@ -566,7 +574,26 @@ texture_font_index_glyph( texture_font_t * self,
 // ------------------------------------------------ texture_font_load_glyph ---
 int
 texture_font_load_glyph( texture_font_t * self,
-                         const char * codepoint )
+			 const char * codepoint )
+{
+    /* codepoint NULL is special : it is used for line drawing (overline,
+     * underline, strikethrough) and background.
+     */
+    if( !codepoint ) {
+	return 1;
+    }
+    uint32_t ucodepoint = utf8_to_utf32(codepoint);
+
+    return texture_font_load_glyph_gi( self,
+				       FT_Get_Char_Index( self->face, ucodepoint),
+				       ucodepoint);
+}
+
+// ------------------------------------------------ texture_font_load_glyph ---
+int
+texture_font_load_glyph_gi( texture_font_t * self,
+			    uint32_t glyph_index,
+			    uint32_t ucodepoint )
 {
     size_t i, x, y;
 
@@ -576,26 +603,17 @@ texture_font_load_glyph( texture_font_t * self,
     FT_GlyphSlot slot;
     FT_Bitmap ft_bitmap;
 
-    FT_UInt glyph_index;
     texture_glyph_t *glyph;
     FT_Int32 flags = 0;
     int ft_glyph_top = 0;
     int ft_glyph_left = 0;
-    FT_ULong ucodepoint;
 
     ivec4 region;
     size_t missed = 0;
 
     /* Check if codepoint has been already loaded */
-    if (texture_font_find_glyph(self, codepoint)) {
+    if (texture_font_find_glyph_gi(self, glyph_index)) {
         return 1;
-    }
-
-    /* codepoint NULL is special : it is used for line drawing (overline,
-     * underline, strikethrough) and background.
-     */
-    if( !codepoint ) {
-	return 1;
     }
 
     if (!texture_font_load_face(self, self->size))
@@ -604,8 +622,6 @@ texture_font_load_glyph( texture_font_t * self,
     flags = 0;
     ft_glyph_top = 0;
     ft_glyph_left = 0;
-    ucodepoint = (FT_ULong)utf8_to_utf32( codepoint );
-    glyph_index = FT_Get_Char_Index( self->face, ucodepoint );
     if(!glyph_index) {
 	texture_glyph_t * glyph;
 	if ((glyph = texture_font_find_glyph(self, "\0"))) {
@@ -651,8 +667,8 @@ texture_font_load_glyph( texture_font_t * self,
 #ifdef FT_LOAD_COLOR
 	flags |= FT_LOAD_COLOR;
 #else
-	freetype_error( 0, "FT_Error (%s:%d, code 0x%02x) : %s\n",
-			    __FILENAME__, __LINE__, 0, "FT_LOAD_COLOR not available");
+	freetype_error( Load_Color_Not_Available, "FT_Error (%s:%d, code 0x%02x) : %s\n",
+			__FILENAME__, __LINE__, 0, "FT_LOAD_COLOR not available");
 #endif
     }
 
@@ -807,7 +823,7 @@ cleanup_stroker:
     free( buffer );
 
     glyph = texture_glyph_new( );
-    glyph->codepoint = glyph_index ? utf8_to_utf32( codepoint ) : 0;
+    glyph->codepoint = glyph_index ? ucodepoint : 0;
 ;
     glyph->width    = tgt_w * self->scale;
     glyph->height   = tgt_h * self->scale;
@@ -914,6 +930,28 @@ texture_font_get_glyph( texture_font_t * self,
     /* Glyph has not been already loaded */
     if( texture_font_load_glyph( self, codepoint ) )
         return texture_font_find_glyph( self, codepoint );
+
+    return NULL;
+}
+
+// ----------------------------------------------- texture_font_get_glyph_gi ---
+texture_glyph_t *
+texture_font_get_glyph_gi( texture_font_t * self,
+			   uint32_t glyph_index )
+{
+    texture_glyph_t *glyph;
+
+    assert( self );
+    assert( self->filename );
+    assert( self->atlas );
+
+    /* Check if glyph_index has been already loaded */
+    if( (glyph = texture_font_find_glyph_gi( self, glyph_index )) )
+        return glyph;
+
+    /* Glyph has not been already loaded */
+    if( texture_font_load_glyph_gi( self, glyph_index, glyph_index ) )
+        return texture_font_find_glyph_gi( self, glyph_index );
 
     return NULL;
 }
