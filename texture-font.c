@@ -612,7 +612,7 @@ texture_font_load_glyph_gi( texture_font_t * self,
     size_t missed = 0;
 
     /* Check if codepoint has been already loaded */
-    if (texture_font_find_glyph_gi(self, glyph_index)) {
+    if (texture_font_find_glyph_gi(self, ucodepoint)) {
         return 1;
     }
 
