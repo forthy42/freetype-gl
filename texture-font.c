@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
+#include <endian.h>
 #include "distance-field.h"
 #include "texture-font.h"
 #include "platform.h"
@@ -38,6 +39,18 @@ const struct {
 
 __THREAD texture_font_library_t * freetype_gl_library = NULL;
 __THREAD font_mode_t mode_default=MODE_AUTO_CLOSE;
+
+// rol8 ror8
+
+static inline uint32_t rol8(uint32_t in)
+{
+    return (in >> 24) | (in << 8);
+}
+
+static inline uint32_t ror8(uint32_t in)
+{
+    return (in >> 8) | (in << 24);
+}
 
 // ------------------------------------------------------ texture_glyph_new ---
 texture_glyph_t *
@@ -803,12 +816,30 @@ cleanup_stroker:
 
     unsigned char *dst_ptr = buffer + (padding.top * tgt_w + padding.left) * self->atlas->depth;
     unsigned char *src_ptr = ft_bitmap.buffer;
-    for( i = 0; i < src_h; i++ )
-    {
-        //difference between width and pitch: https://www.freetype.org/freetype2/docs/reference/ft2-basic_types.html#FT_Bitmap
-        memcpy( dst_ptr, src_ptr, ft_bitmap.width << (self->atlas->depth == 4 ? 2 : 0));
-        dst_ptr += tgt_w * self->atlas->depth;
-        src_ptr += ft_bitmap.pitch;
+    if( self->atlas->depth == 4 ) {
+	for( i = 0; i < src_h; i++ ) {
+	    int j;
+	    // flip bgra to rgba, because that's better for OpenGL
+	    for( j = 0; j < ft_bitmap.width; j++ ) {
+		uint32_t bgra, rgba;
+		bgra = ((uint32_t*)src_ptr)[j];
+#if __BYTE_ORDER == __BIG_ENDIAN
+		rgba = rol8(__builtin_bswap32(bgra));
+#else
+		rgba = ror8(__builtin_bswap32(bgra));
+#endif
+		((uint32_t*)dst_ptr)[j] = rgba;
+	    }
+	    dst_ptr += tgt_w * self->atlas->depth;
+	    src_ptr += ft_bitmap.pitch;
+	}
+    } else {
+	for( i = 0; i < src_h; i++ ) {
+	    //difference between width and pitch: https://www.freetype.org/freetype2/docs/reference/ft2-basic_types.html#FT_Bitmap
+	    memcpy( dst_ptr, src_ptr, ft_bitmap.width);
+	    dst_ptr += tgt_w * self->atlas->depth;
+	    src_ptr += ft_bitmap.pitch;
+	}
     }
 
     if( self->rendermode == RENDER_SIGNED_DISTANCE_FIELD )

@@ -1,6 +1,6 @@
 ## ExampleLib Example: an example of using Automake to link with a library
 
-AC_INIT([freetype-gl], [1.5], [bernd@net2o.de], [freetype-gl for Linux/Android],
+AC_INIT([freetype-gl], [1.6], [bernd@net2o.de], [freetype-gl for Linux/Android],
         [https://github.com/forthy42/freetype-gl])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([1.10 -Wall no-define])
