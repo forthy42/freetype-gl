@@ -4,6 +4,7 @@ AC_INIT([freetype-gl], [1.6], [bernd@net2o.de], [freetype-gl for Linux/Android],
         [https://github.com/forthy42/freetype-gl])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([1.10 -Wall no-define])
+AC_USE_SYSTEM_EXTENSIONS
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_CC
