@@ -413,6 +413,7 @@ texture_font_clone( texture_font_t *old, float pt_size)
 {
     texture_font_t *self;
     FT_Error error = 0;
+    float native_size = old->size / old->scale; // unscale fonts
     
     self = calloc(1, sizeof(*self));
     if (!self) {
@@ -422,7 +423,7 @@ texture_font_clone( texture_font_t *old, float pt_size)
     }
 
     memcpy(self, old, sizeof(*self));
-    self->glyphs = vector_new(sizeof(texture_glyph_t *));
+    self->size  = pt_size;
 
     error = FT_New_Size( self->face, &self->ft_size );
     if(error) {
@@ -446,6 +447,8 @@ texture_font_clone( texture_font_t *old, float pt_size)
     if(!texture_font_set_size ( self, pt_size ))
 	return NULL;
 
+    if(self->size / self->scale != native_size)
+	self->glyphs = vector_new(sizeof(texture_glyph_t *));
     return self;
 }
 // ----------------------------------------------------- texture_font_close ---
@@ -934,12 +937,12 @@ cleanup_stroker:
     glyph = texture_glyph_new( );
     glyph->codepoint = glyph_index ? ucodepoint : 0;
 ;
-    glyph->width    = tgt_w * self->scale;
-    glyph->height   = tgt_h * self->scale;
+    glyph->width    = tgt_w;
+    glyph->height   = tgt_h;
     glyph->rendermode = self->rendermode;
     glyph->outline_thickness = self->outline_thickness;
-    glyph->offset_x = ft_glyph_left * self->scale;
-    glyph->offset_y = ft_glyph_top * self->scale;
+    glyph->offset_x = ft_glyph_left;
+    glyph->offset_y = ft_glyph_top;
     if(self->scaletex) {
 	glyph->s0       = x/(float)self->atlas->width;
 	glyph->t0       = y/(float)self->atlas->height;
@@ -958,8 +961,8 @@ cleanup_stroker:
     slot = self->face->glyph;
     if( self->atlas->depth == 4 ) {
 	// color fonts use actual pixels, not subpixels
-	glyph->advance_x = slot->advance.x * self->scale;
-	glyph->advance_y = slot->advance.y * self->scale;
+	glyph->advance_x = slot->advance.x;
+	glyph->advance_y = slot->advance.y;
     } else {
 	glyph->advance_x = slot->advance.x * self->scale / HRESf;
 	glyph->advance_y = slot->advance.y * self->scale / HRESf;
