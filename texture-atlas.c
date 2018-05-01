@@ -297,3 +297,36 @@ texture_atlas_clear( texture_atlas_t * self )
     vector_push_back( self->nodes, &node );
     memset( self->data, 0, self->width*self->height*self->depth );
 }
+
+// -------------------------------------------- texture_atlas_enlarge_atlas ---
+
+void texture_atlas_enlarge_texture ( texture_atlas_t* self, size_t width_new, size_t height_new)
+{
+    assert(self);
+    //ensure size increased
+    assert(width_new >= self->width);
+    assert(height_new >= self->height);
+    assert(width_new + height_new > self->width + self->height);
+
+    size_t width_old = self->width;
+    size_t height_old = self->height;    
+    //allocate new buffer
+    unsigned char* data_old = self->data;
+    self->data = calloc(1,width_new*height_new * sizeof(char)*self->depth);    
+    //update atlas size
+    self->width = width_new;
+    self->height = height_new;
+    //add node reflecting the gained space on the right
+    if(width_new>width_old){
+    	ivec3 node;
+        node.x = width_old - 1;
+        node.y = 1;
+        node.z = width_new - width_old;
+        vector_push_back(self->nodes, &node);    
+    }
+    //copy over data from the old buffer, skipping first row and column because of the margin
+    size_t pixel_size = sizeof(char) * self->depth;
+    size_t old_row_size = width_old * pixel_size;
+    texture_atlas_set_region(self, 1, 1, width_old - 2, height_old - 2, data_old + old_row_size + pixel_size, old_row_size);
+    free(data_old);    
+}

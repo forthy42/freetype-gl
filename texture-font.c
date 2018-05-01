@@ -1068,33 +1068,8 @@ texture_font_enlarge_texture( texture_font_t * self, size_t width_new,
 			      size_t height_new)
 {
     assert(self);
-    assert(self->atlas);
-    //ensure size increased
-    assert(width_new >= self->atlas->width);
-    assert(height_new >= self->atlas->height);
-    assert(width_new + height_new > self->atlas->width + self->atlas->height);    
-    texture_atlas_t* ta = self->atlas;
-    size_t width_old = ta->width;
-    size_t height_old = ta->height;    
-    //allocate new buffer
-    unsigned char* data_old = ta->data;
-    ta->data = calloc(1,width_new*height_new * sizeof(char)*ta->depth);    
-    //update atlas size
-    ta->width = width_new;
-    ta->height = height_new;
-    //add node reflecting the gained space on the right
-    if(width_new>width_old){
-    	ivec3 node;
-        node.x = width_old - 1;
-        node.y = 1;
-        node.z = width_new - width_old;
-        vector_push_back(ta->nodes, &node);    
-    }
-    //copy over data from the old buffer, skipping first row and column because of the margin
-    size_t pixel_size = sizeof(char) * ta->depth;
-    size_t old_row_size = width_old * pixel_size;
-    texture_atlas_set_region(ta, 1, 1, width_old - 2, height_old - 2, data_old + old_row_size + pixel_size, old_row_size);
-    free(data_old);    
+
+    texture_atlas_enlarge_texture ( self->atlas, width_new, height_new);
 }
 // -------------------------------------------- texture_font_enlarge_atlas ---
 void
