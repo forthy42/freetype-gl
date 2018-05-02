@@ -1030,14 +1030,12 @@ texture_font_get_glyph( texture_font_t * self,
     assert( self->atlas );
 
     /* Check if codepoint has been already loaded */
-    if( (glyph = texture_font_find_glyph( self, codepoint )) )
-        return glyph;
-
+    if( !(glyph = texture_font_find_glyph( self, codepoint )) )
     /* Glyph has not been already loaded */
-    if( texture_font_load_glyph( self, codepoint ) )
-        return texture_font_find_glyph( self, codepoint );
+	if( texture_font_load_glyph( self, codepoint ) )
+	    glyph = texture_font_find_glyph( self, codepoint );
 
-    return NULL;
+    return glyph;
 }
 
 // ----------------------------------------------- texture_font_get_glyph_gi ---
