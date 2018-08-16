@@ -2,13 +2,13 @@ Source: freetype-gl
 Section: libraries
 Priority: optional
 Maintainer: Bernd Paysan <bernd.paysan@gmx.de>
-Build-Depends: debhelper (>= 4.1.16), build-essential, gcc, autoconf, automake, autotools-dev, libtool, libtool-bin
+Build-Depends: debhelper (>= 4.1.16), build-essential, gcc, autoconf, automake, autotools-dev, libtool, libtool-bin, libfreetype6-dev
 
 Package: freetype-gl
 Version: @VERSION@
 Architecture: any
 Multi-Arch: same
-Depends: libfreetype6, libpng16-16, libbz2-1 | libbz2-1.0
+Depends: libfreetype6
 Description: Freetype GL
  Freetype GL is a simple and performant library to display text using
  one single OpenGL texture buffer; you can draw all glyphs with one single
