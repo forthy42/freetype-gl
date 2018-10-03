@@ -15,7 +15,11 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include <endian.h>
+#ifdef __APPLE__
+# include <machine/endian.h>
+#else
+# include <endian.h>
+#endif
 #include "distance-field.h"
 #include "texture-font.h"
 #include "platform.h"
