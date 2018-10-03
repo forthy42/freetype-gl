@@ -28,7 +28,7 @@ SOURCE_PATH_SIZE=0 #$(echo $PWD | wc -c)
 AC_SUBST(FTINC)
 AC_SUBST(LIBADD)
 AC_SUBST(SOURCE_PATH_SIZE)
-AX_GCC_BUILTIN(__builtin_bswap32)
+dnl AX_GCC_BUILTIN(__builtin_bswap32)
 
 PRECC=${CC%gcc*}
 PRECLANG=${PRECC%clang*}
