@@ -30,6 +30,11 @@ namespace ftgl {
  */
 extern __THREAD int freetype_gl_errno;
 /**
+ * freetype_gl_warnings is a flag that activates output of warnings.
+ *                      Default is warnings off
+ */
+extern __THREAD int freetype_gl_warnings;
+/**
  * freetype_gl_message  is the error message if a freetype-gl function fails
  */
 extern __THREAD char * freetype_gl_message;
@@ -59,6 +64,12 @@ extern char* freetype_gl_errstrs[];
 	freetype_gl_errno = FTGL_ERR_CAT( FTGL_ERR_PREFIX, errno);	\
 	freetype_gl_message = freetype_gl_errstrs[FTGL_ERR_CAT( FTGL_ERR_PREFIX, errno)-FTGL_ERR_BASE]; \
 	freetype_gl_errhook(freetype_gl_errno, freetype_gl_message, __VA_ARGS__); \
+    }
+
+#define freetype_gl_warning(errno, ...) {			     \
+	freetype_gl_errno = FTGL_ERR_CAT( FTGL_ERR_PREFIX, errno);	\
+	freetype_gl_message = freetype_gl_errstrs[FTGL_ERR_CAT( FTGL_ERR_PREFIX, errno)-FTGL_ERR_BASE]; \
+	if(freetype_gl_warnings) freetype_gl_errhook(freetype_gl_errno, freetype_gl_message, __VA_ARGS__); \
     }
 
 #define freetype_error(error, ...) {	     \

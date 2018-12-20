@@ -886,10 +886,10 @@ cleanup_stroker:
 
     if ( region.x < 0 )
     {
-        freetype_gl_error( Texture_Atlas_Full,
-			   "Texture atlas is full, asked for %i*%i (%s:%d)\n",
-			   tgt_w, tgt_h,
-			   __FILENAME__, __LINE__ );
+        freetype_gl_warning( Texture_Atlas_Full,
+			     "Texture atlas is full, asked for %i*%i (%s:%d)\n",
+			     tgt_w, tgt_h,
+			     __FILENAME__, __LINE__ );
 	texture_font_close( self, MODE_AUTO_CLOSE, MODE_AUTO_CLOSE );
         return 0;
     }

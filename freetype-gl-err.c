@@ -9,6 +9,7 @@
 #include "freetype-gl-err.h"
 
 __THREAD int freetype_gl_errno=0;
+__THREAD int freetype_gl_warnings=0;
 __THREAD char * freetype_gl_message=NULL;
 
 #ifdef __ANDROID__
