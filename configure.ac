@@ -18,7 +18,7 @@ case $CC in
 esac
 case "$host_os" in
     *darwin*)
-	for i in /opt/X11 /sw /usr/local
+	for i in /usr/local /opt/X11 /sw
 	do
 	    test -d $i/include && CPPFLAGS="$CPPFLAGS -I$i/include"
 	    test -d $i/include/freetype2 && CPPFLAGS="$CPPFLAGS -I$i/include/freetype2"
