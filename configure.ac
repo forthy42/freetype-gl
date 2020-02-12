@@ -16,6 +16,15 @@ case $CC in
 	LIBADD="-llog"
 	;;
 esac
+case "$host_os" in
+    *darwin*)
+	for i in /opt/X11 /sw /usr/local
+	do
+	    test -d $i/include && CPPFLAGS="$CPPFLAGS -I$i/include"
+	    test -d $i/lib && LDFLAGS="$LDFLAGS -L$i/lib"
+	done
+	;;
+esac
 
 >conftest.$ac_ext
 echo -n "checking include directory for ft2build.h... "
