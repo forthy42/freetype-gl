@@ -21,6 +21,7 @@ case "$host_os" in
 	for i in /opt/X11 /sw /usr/local
 	do
 	    test -d $i/include && CPPFLAGS="$CPPFLAGS -I$i/include"
+	    test -d $i/include/freetype2 && CPPFLAGS="$CPPFLAGS -I$i/include/freetype2"
 	    test -d $i/lib && LDFLAGS="$LDFLAGS -L$i/lib"
 	done
 	;;
