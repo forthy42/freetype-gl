@@ -14,6 +14,16 @@
 #include "texture-font.h"
 #include "freetype-gl-err.h"
 
+#ifdef IMPLEMENT_FREETYPE_GL
+#include "texture-atlas.c"
+#include "texture-font.c"
+#include "vector.c"
+#include "utf8-utils.c"
+#include "freetype-gl-err.c"
+#endif
+
+#endif
+
 #ifdef __cplusplus
 #ifndef NOT_USING_FT_GL_NAMESPACE
 using namespace ftgl;
