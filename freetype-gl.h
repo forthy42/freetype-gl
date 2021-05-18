@@ -12,14 +12,14 @@
 #include "vector.h"
 #include "texture-atlas.h"
 #include "texture-font.h"
-#include "freetype-gl-err.h"
+#include "ftgl-util.h"
 
 #ifdef IMPLEMENT_FREETYPE_GL
 #include "texture-atlas.c"
 #include "texture-font.c"
 #include "vector.c"
 #include "utf8-utils.c"
-#include "freetype-gl-err.c"
+#include "ftgl-util.c"
 #endif
 
 #endif

@@ -38,9 +38,8 @@ font_manager_new( size_t width, size_t height, size_t depth )
     self = (font_manager_t *) malloc( sizeof(font_manager_t) );
     if( !self )
     {
-        freetype_gl_error( Out_Of_Memory,
-			   "line %d: No more memory for allocating data\n", __LINE__ );
-	return NULL;
+        freetype_gl_error( Out_Of_Memory );
+        return NULL;
         /* exit( EXIT_FAILURE ); */ /* Never ever exit from a library */
     }
     self->atlas = atlas;
@@ -125,8 +124,7 @@ font_manager_get_from_filename( font_manager_t *self,
         texture_font_load_glyphs( font, self->cache );
         return font;
     }
-    freetype_gl_error( Cannot_Load_File,
-		       "Unable to load \"%s\" (size=%.1f)\n", filename, size );
+    freetype_gl_error_str( Cannot_Load_File, filename );
     return 0;
 }
 
@@ -151,16 +149,17 @@ font_manager_get_from_description( font_manager_t *self,
     else
     {
 #if defined(_WIN32) || defined(_WIN64)
-        freetype_gl_error( Unimplemented_Function,
-			   "\"font_manager_get_from_description\" not implemented yet.\n" );
+        freetype_gl_error( Unimplemented_Function );
         return 0;
 #endif
         filename = font_manager_match_description( self, family, size, bold, italic );
         if( !filename )
         {
-            freetype_gl_error( Font_Unavailable,
-			       "No \"%s (size=%.1f, bold=%d, italic=%d)\" font available.\n",
+            char * string[0x101] = [0x100] '\0';
+            snprintf(string, 0x100,
+                     "%s (size=%.1f, bold=%d, italic=%d)",
                      family, size, bold, italic );
+            freetype_gl_error_str( Font_Unavailable, string );
             return 0;
         }
     }
@@ -195,9 +194,8 @@ font_manager_match_description( font_manager_t * self,
     return 0;
 #else
 #  if defined _WIN32 || defined _WIN64
-      freetype_gl_error( Unimplemented_Function,
-			 "\"font_manager_match_description\" not implemented for windows.\n" );
-      return 0;
+    freetype_gl_error( Unimplemented_Function );
+    return 0;
 #  endif
     char *filename = 0;
     int weight = FC_WEIGHT_REGULAR;
@@ -224,8 +222,7 @@ font_manager_match_description( font_manager_t * self,
 
     if ( !match )
     {
-        freetype_gl_error( Cant_Match_Family,
-			   "fontconfig error: could not match family '%s'", family );
+        freetype_gl_error_str( Cant_Match_Family, family );
         return 0;
     }
     else
@@ -234,8 +231,7 @@ font_manager_match_description( font_manager_t * self,
         FcResult result = FcPatternGet( match, FC_FILE, 0, &value );
         if ( result )
         {
-            freetype_gl_error( Cant_Match_Family,
-			       "fontconfig error: could not match family '%s'", family );
+            freetype_gl_error_str( Cant_Match_Family, family );
         }
         else
         {
