@@ -753,6 +753,18 @@ texture_font_load_glyph_gi( texture_font_t * self,
             FT_Library_SetLcdFilterWeights( self->library->library, self->lcd_weights );
         }
     }
+    else if (HRES == 1)
+    {
+        /* “FT_LOAD_TARGET_LIGHT
+         *  A lighter hinting algorithm for gray-level modes. Many generated
+         *  glyphs are fuzzier but better resemble their original shape.
+         *  This is achieved by snapping glyphs to the pixel grid
+         *  only vertically (Y-axis), as is done by FreeType's new CFF engine
+         *  or Microsoft's ClearType font renderer.”
+         * https://www.freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_load_target_xxx
+         */
+        flags |= FT_LOAD_TARGET_LIGHT;
+    }
 
     if( self->atlas->depth == 4 )
     {
