@@ -54,11 +54,12 @@ __THREAD const char * freetype_gl_message=NULL;
 const char* freetype_gl_errstrs[] = {
   #include <freetype/fterrdef.h>
   #include "freetype-gl-errdef.h"
-  [FTGL_ERRSTR_MAX] = NULL
+  [FTGL_ERRSTR_MAX+1] = NULL
 };
 
-const char* FTGL_Error_String( int error_code )
+const char* FTGL_Error_String( unsigned int error_code )
 {
+    if( error_code > FTGL_ERRSTR_MAX) return NULL;
     return freetype_gl_errstrs[error_code];
 }
 

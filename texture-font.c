@@ -435,14 +435,11 @@ texture_font_clone( texture_font_t *old, float pt_size)
         return NULL;
     }
     
-    if(!texture_font_set_size ( self, pt_size * 100.f ))
+    if(!texture_font_set_size ( self, pt_size ))
         return NULL;
 
     texture_font_init_size( self );
     
-    if(!texture_font_set_size ( self, pt_size ))
-        return NULL;
-
     if(self->size / self->scale != native_size)
         self->glyphs = vector_new(sizeof(texture_glyph_t *));
     return self;
