@@ -17,6 +17,10 @@
 #include <math.h>
 #ifdef __APPLE__
 # include <machine/endian.h>
+#elif defined(_WIN32) || defined(_WIN64)
+# define __LITTLE_ENDIAN 1234
+# define __BIG_ENDIAN 4321
+# define __BYTE_ORDER __LITTLE_ENDIAN
 #else
 # include <endian.h>
 #endif
@@ -45,6 +49,10 @@ __THREAD texture_font_library_t * freetype_gl_library = NULL;
 __THREAD font_mode_t mode_default=MODE_FREE_CLOSE;
 
 // rol8 ror8
+
+#if defined _MSC_VER && defined __EDG__ && !defined __cplusplus
+    #define inline
+#endif
 
 static inline uint32_t rol8(uint32_t in)
 {
