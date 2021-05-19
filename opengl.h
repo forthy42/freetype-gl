@@ -33,5 +33,6 @@
 #  include <GL/glew.h>
 #  include <GL/gl.h>
 #endif
+#endif /* GL_WITH_GLAD */
 
 #endif /* OPEN_GL_H */

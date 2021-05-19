@@ -82,7 +82,7 @@ __THREAD const char * freetype_gl_message;
 #ifndef IMPLEMENT_FREETYPE_GL
 extern
 #endif
-const char* FTGL_Error_String( FT_Error error_code );
+const char* FTGL_Error_String( int error_code );
 
 #ifndef FTGL_ERR_PREFIX
 # define FTGL_ERR_PREFIX  FTGL_Err_

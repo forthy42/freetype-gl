@@ -57,7 +57,7 @@ const char* freetype_gl_errstrs[] = {
   [FTGL_ERRSTR_MAX] = NULL
 };
 
-const char* FTGL_Error_String( FT_Error error_code )
+const char* FTGL_Error_String( int error_code )
 {
     return freetype_gl_errstrs[error_code];
 }
