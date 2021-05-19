@@ -77,12 +77,12 @@ extern
 #endif
 __THREAD const char * freetype_gl_message;
 /**
- * freetype_gl_errstr   converts an errno to the message (including FT_errors)
+ * FTGL_Error_String  converts an errno to the message (including FT_errors)
  */
 #ifndef IMPLEMENT_FREETYPE_GL
 extern
 #endif
-const char* freetype_gl_errstr(int errno);
+const char* FTGL_Error_String( FT_Error error_code );
 
 #ifndef FTGL_ERR_PREFIX
 # define FTGL_ERR_PREFIX  FTGL_Err_
