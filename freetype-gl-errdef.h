@@ -9,31 +9,31 @@
 
 FTGL_ERROR_START_LIST
 
-FTGL_ERRORDEF_( Texture_Atlas_Full,			0x00,
+FTGL_ERRORDEF_( Texture_Atlas_Full,			0xD0,
 		"Texture atlas is full" )
-FTGL_ERRORDEF_( Cannot_Load_File,			0x01,
+FTGL_ERRORDEF_( Cannot_Load_File,			0xD1,
 		"unable to load file" )
-FTGL_ERRORDEF_( Font_Unavailable,			0x02,
+FTGL_ERRORDEF_( Font_Unavailable,			0xD2,
 		"no font available" )
-FTGL_ERRORDEF_( No_Font_File_Given,			0x03,
+FTGL_ERRORDEF_( No_Font_File_Given,			0xD3,
 		"no font file given" )
-FTGL_ERRORDEF_( Out_Of_Memory,				0x04,
+FTGL_ERRORDEF_( Out_Of_Memory,				0xD4,
 		"out of memory" )
-FTGL_ERRORDEF_( Unimplemented_Function,			0x05,
+FTGL_ERRORDEF_( Unimplemented_Function,			0xD5,
 		"unimplemented function" )
-FTGL_ERRORDEF_( Cant_Match_Family,			0x06,
+FTGL_ERRORDEF_( Cant_Match_Family,			0xD6,
 		"fontconfig error: could not match family" )
-FTGL_ERRORDEF_( No_Font_In_Markup,			0x07,
+FTGL_ERRORDEF_( No_Font_In_Markup,			0xD7,
 		"Markup doesn't have a font" )
-FTGL_ERRORDEF_( No_Size_Specified,			0x08,
+FTGL_ERRORDEF_( No_Size_Specified,			0xD8,
 		"No size specified for attribute" )
-FTGL_ERRORDEF_( No_Format_Specified,			0x09,
+FTGL_ERRORDEF_( No_Format_Specified,			0xD9,
 		"No format specified for attribute" )
-FTGL_ERRORDEF_( Vertex_Attribute_Format_Wrong,		0x0A,
+FTGL_ERRORDEF_( Vertex_Attribute_Format_Wrong,		0xDA,
 		"Vertex attribute format not understood" )
-FTGL_ERRORDEF_( Load_Color_Not_Available,		0x0B,
+FTGL_ERRORDEF_( Load_Color_Not_Available,		0xDB,
 		"FT_LOAD_COLOR not available" )
-FTGL_ERRORDEF_( No_Fixed_Size_In_Color_Font,		0x0C,
+FTGL_ERRORDEF_( No_Fixed_Size_In_Color_Font,		0xDC,
 		"No fixed size in color font" )
 
 FTGL_ERROR_END_LIST
