@@ -58,14 +58,13 @@ static inline __builtin_bswap32(uint32_t in)
 }
 #endif
 
-static inline uint32_t rol8(uint32_t in)
+static inline uint32_t rol_ror8(uint32_t in)
 {
+#if __BYTE_ORDER == __BIG_ENDIAN
     return (in >> 24) | (in << 8);
-}
-
-static inline uint32_t ror8(uint32_t in)
-{
+#else
     return (in >> 8) | (in << 24);
+#endif
 }
 
 // ------------------------------------------------------ texture_glyph_new ---
@@ -683,7 +682,7 @@ texture_font_load_glyph_gi( texture_font_t * self,
 
     FT_Error error;
     FT_Face face;
-    FT_Glyph ft_glyph;
+    FT_Glyph ft_glyph = NULL;
     FT_GlyphSlot slot;
     FT_Bitmap ft_bitmap;
 
@@ -911,11 +910,7 @@ cleanup_stroker:
             for( j = 0; j < ft_bitmap.width; j++ ) {
                 uint32_t bgra, rgba;
                 bgra = ((uint32_t*)src_ptr)[j];
-#if __BYTE_ORDER == __BIG_ENDIAN
-                rgba = rol8(__builtin_bswap32(bgra));
-#else
-                rgba = ror8(__builtin_bswap32(bgra));
-#endif
+                rgba = rol_ror8(__builtin_bswap32(bgra));
                 ((uint32_t*)dst_ptr)[j] = rgba;
             }
             dst_ptr += tgt_w * self->atlas->depth;
