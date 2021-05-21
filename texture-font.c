@@ -18,9 +18,9 @@
 #ifdef __APPLE__
 # include <machine/endian.h>
 #elif defined(_WIN32) || defined(_WIN64)
-# define __LITTLE_ENDIAN 1234
-# define __BIG_ENDIAN 4321
-# define __BYTE_ORDER __LITTLE_ENDIAN
+# define __ORDER_LITTLE_ENDIAN__ 1234
+# define __ORDER_BIG_ENDIAN__ 4321
+# define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
 #else
 # include <endian.h>
 #endif
@@ -60,7 +60,7 @@ static inline __builtin_bswap32(uint32_t in)
 
 static inline uint32_t rol_ror8(uint32_t in)
 {
-#if __BYTE_ORDER == __BIG_ENDIAN
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     return (in >> 24) | (in << 8);
 #else
     return (in >> 8) | (in << 24);
